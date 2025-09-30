@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Classificação de Emails</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        .resultado {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f1f1f1;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Classificação Automática de Emails</h1>
+
+    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+        <label for="file">Selecione um arquivo .txt de email:</label><br><br>
+        <input type="file" name="file" id="file" accept=".txt" required>
+        <br><br>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <div id="resultado" class="resultado"></div>
+
+    <script>
+        const form = document.getElementById("uploadForm");
+        const resultadoDiv = document.getElementById("resultado");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const response = await fetch("/upload", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            resultadoDiv.style.display = "block";
+            resultadoDiv.innerHTML = `
+                <strong>Categoria:</strong> ${data.categoria}<br>
+                <strong>Resposta Sugerida:</strong> ${data.resposta}
+            `;
+        });
+    </script>
+</body>
+</html>
